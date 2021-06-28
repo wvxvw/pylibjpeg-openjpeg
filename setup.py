@@ -16,7 +16,6 @@ PACKAGE_DIR = Path(__file__).parent / "openjpeg"
 OPENJPEG_SRC = PACKAGE_DIR / "src" / "openjpeg" / "src" / "lib" / "openjp2"
 INTERFACE_SRC = PACKAGE_DIR / "src" / "interface"
 
-
 # Workaround for needing Cython and numpy
 # Solution from: https://stackoverflow.com/a/54128391/12606901
 class build(build_orig):
@@ -114,10 +113,29 @@ with open(VERSION_FILE) as fp:
 with open("README.md", "r") as fp:
     long_description = fp.read()
 
+package_data = {
+    '': ['LICENSE', 'README.md'],
+    'openjpeg':
+    [str(p) for p in INTERFACE_SRC.parent.parent.glob('*.c')] +
+    [str(p) for p in INTERFACE_SRC.parent.parent.glob('*.pyx')],
+    'openjpeg/src/interface': [str(p) for p in INTERFACE_SRC.glob('*.[ch]')],
+}
+print(package_data)
+
 setup(
     name = "pylibjpeg-openjpeg",
-    packages = find_packages(),
-    include_package_data = True,
+    packages = [
+        'openjpeg',
+        'openjpeg.src',
+        'openjpeg.src.interface',
+        'openjpeg.tests',
+    ],
+    package_data={
+        'openjpeg':
+        [p.name for p in INTERFACE_SRC.parent.parent.glob('*.c')] +
+        [p.name for p in INTERFACE_SRC.parent.parent.glob('*.pyx')],
+        'openjpeg.src.interface': [p.name for p in INTERFACE_SRC.glob('*.[ch]')],
+    },
     version = __version__,
     zip_safe = False,
     description = (

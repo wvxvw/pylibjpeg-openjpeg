@@ -124,3 +124,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+/openjpeg/src/interface/
+*~
+/conda-pkg/bld.bat
+/conda-pkg/meta.yaml
